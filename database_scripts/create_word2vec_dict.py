@@ -56,8 +56,8 @@ with open(FILE_NAME, 'rb') as f:
         sys.stdout.write("%d%%\r" % (len(vectors) / len(words) * 100))
         sys.stdout.flush()
 
-# import cPickle
+import cPickle
 
-# print "\nSaving..."
-# with open(FILE_NAME[:-3] + "pcl", 'wb') as f:
-# cPickle.dump(vectors, f, cPickle.HIGHEST_PROTOCOL)
+print "\nSaving..."
+with open(FILE_NAME[:-3] + "pcl", 'wb') as f:
+    cPickle.dump(vectors, f, cPickle.HIGHEST_PROTOCOL)
