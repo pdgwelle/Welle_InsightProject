@@ -103,3 +103,4 @@ ENV/
 # bulky assets
 database_scripts/assets/*
 _old/*
+database_scripts/get_example.py
