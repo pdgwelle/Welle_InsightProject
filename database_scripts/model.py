@@ -1,5 +1,4 @@
 from mongoengine import *
-import mongoengine
 
 db = connect('ftm')
 
@@ -21,7 +20,7 @@ class Parent_Document(Document):
         return '<Parent_Document - Title: %r Author: %r>' % (self.title, self.author)
 
 class Passage(Document):
-    parent_doc = ReferenceField(Parent_Document, reverse_delete_rule=mongoengine.CASCADE)
+    parent_doc = ReferenceField(Parent_Document, reverse_delete_rule=CASCADE)
     paragraph_index = LongField()
 
     def get_paragraph(self, offset=0):
@@ -41,7 +40,7 @@ class Word(Document):
                 return word_list
                 
     word = StringField()
-    passages = ListField(ReferenceField(Passage, reverse_delete_rule=mongoengine.PULL))
+    passages = ListField(ReferenceField(Passage, reverse_delete_rule=PULL))
 
     meta = {'indexes': ['$word', '#word']}
 
