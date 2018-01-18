@@ -169,8 +169,16 @@ label{
   margin-bottom: 0;
 }
 
+.text_quotes{
+  margin-top: 50px;
+}
+
+.left_margin_20{
+  margin-left: 20px;
+}
+
 .height_100{
-  height: 200px;
+  height: 100px;
 }
 
 .vcenter {

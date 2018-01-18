@@ -19,7 +19,8 @@ def index():
         objectivity = request.form['objectivity']
         readability = request.form['readability']
         source = request.form['source']
-        text_list = db.retrieve_examples(text, source)
+        text_list = db.retrieve_examples(text, source, 
+            ranks=[int(tone), -1*int(objectivity), int(readability)]) # actual data science term is subjectivity, but objectivity is likely easier for the user. -1 flips the ranking
         return render_template("index.html", text_list=text_list)
     else:
         return render_template("index.html")

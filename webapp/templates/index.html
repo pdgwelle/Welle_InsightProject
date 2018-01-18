@@ -61,7 +61,8 @@
                   <h3>Examples:</h3>
                   {% for text in text_list %}
                   <div class=col-sm-12>
-                    <blockquote>{{text}}</blockquote>
+                    <blockquote class="text_quotes">{{text}}</blockquote>
+                    <a class = "left_margin" href="#">Get Similar Example!</a>
                   </div>
                   {% endfor %}
               {% endif %}
@@ -88,13 +89,13 @@
                 </div>
 
                 <h4>Readability</h4>
-                <input id="slide_readability" name="readability" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <input id="slide_readability" name="readability" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
 
                 <h4>Tone</h4>
-                <input id="slide_tone" name="tone" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <input id="slide_tone" name="tone" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
 
                 <h4>Objectivity</h4>
-                <input id="slide_objectivity" name="objectivity" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <input id="slide_objectivity" name="objectivity" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
               </div><!-- sidebar-module-inset-->
             </div><!-- /.blog-sidebar -->
         
