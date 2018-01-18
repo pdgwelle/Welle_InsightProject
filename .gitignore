@@ -104,3 +104,4 @@ ENV/
 database_scripts/assets/*
 _old/*
 database_scripts/get_example.py
+database_scripts/extract_from_database.py

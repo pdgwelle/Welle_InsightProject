@@ -1,24 +1,37 @@
-from flask import render_template
-from webapp import app
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 import psycopg2
-from flask import request
 
-user = 'pdgwelle' #add your username here (same as previous postgreSQL)            
-host = 'localhost'
-dbname = 'birth_db'
-db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
-con = None
-con = psycopg2.connect(database = dbname, user = user)
+from flask import request
+from flask import render_template
+
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+
+import database_scripts as db
+from webapp import app
 
 @app.route('/')
-@app.route('/index')
+@app.route('/', methods=['POST'])
 def index():
-    return render_template("index.html",
-       title = 'Home', user = { 'nickname': 'Miguel' },
-       )
+    if request.method == "POST":
+        text = request.form['text']
+        tone = request.form['tone']
+        objectivity = request.form['objectivity']
+        readability = request.form['readability']
+        source = request.form['source']
+        text_list = db.retrieve_examples(text, source)
+        return render_template("index.html", text_list=text_list)
+    else:
+        return render_template("index.html")
+
+@app.route('/test')
+@app.route('/test', methods=['POST'])
+def test():
+    if request.method == "POST":
+      text = request.form['text']
+      return render_template("test_submit.html", data=text)
+    else:
+      return render_template("test_submit.html")
 
 @app.route('/db')
 def birth_page():

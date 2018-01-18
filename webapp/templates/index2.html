@@ -44,7 +44,7 @@
 
       <div class="row">
 
-        <form method="POST">
+        <form>
 
             <div class="col-sm-8 blog-main">
 
@@ -53,18 +53,8 @@
                   <input name="text" class="form-control" placeholder="Search for...">
                   <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">Go!</button>
-                  </span>
                 </div><!-- /input-group -->
               </div><!-- /.col-lg-12 -->
-
-              {% if text_list %}
-                  <h3>Examples:</h3>
-                  {% for text in text_list %}
-                  <div class=col-sm-12>
-                    <blockquote>{{text}}</blockquote>
-                  </div>
-                  {% endfor %}
-              {% endif %}
 
             </div><!-- /.blog-main -->
 
@@ -75,29 +65,35 @@
                 <h4>Source</h4>
                 <div class="radio">
                     <input type="radio" id="contactChoice1"
-                     name="source" value="fiction" checked="checked">
+                     name="contact" value="email" checked="checked">
                     <label for="contactChoice1">Fiction</label><br>
 
                     <input type="radio" id="contactChoice2"
-                     name="source" value="news">
-                    <label for="news">News</label><br>
+                     name="contact" value="phone">
+                    <label for="contactChoice2">News Sources</label><br>
 
                     <input type="radio" id="contactChoice3"
-                     name="source" value="twitter">
-                    <label for="twitter">Twitter</label><br>
+                     name="contact" value="mail">
+                    <label for="contactChoice3">Twitter</label><br>
                 </div>
 
                 <h4>Readability</h4>
-                <input id="slide_readability" name="readability" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <input id="slide_readability" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <button id="enable_readability">Enable</button>
+                <button id="disable_readability">Disable</button>
 
                 <h4>Tone</h4>
-                <input id="slide_tone" name="tone" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <input id="slide_tone" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <button id="enable_tone">Enable</button>
+                <button id="disable_tone">Disable</button>
 
                 <h4>Objectivity</h4>
-                <input id="slide_objectivity" name="objectivity" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <input id="slide_objectivity" type="text" value="" data-slider-min="-20" data-slider-max="20" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <button id="enable_objectivity">Enable</button>
+                <button id="disable_objectivity">Disable</button>
+
               </div><!-- sidebar-module-inset-->
             </div><!-- /.blog-sidebar -->
-        
         </form>
       </div><!-- /.row -->
     </div><!-- /.container -->
@@ -105,8 +101,16 @@
 
     <script type='text/javascript'>
         $('#slide_readability').slider();
+        $('#enable_readability').click(function(){ $('#slide_readability').slider('enable') });
+        $('#disable_readability').click(function(){ $('#slide_readability').slider('disable') });
+
         $('#slide_tone').slider();
+        $('#enable_tone').click(function(){ $('#slide_tone').slider('enable') });
+        $('#disable_tone').click(function(){ $('#slide_tone').slider('disable') });
+
         $('#slide_objectivity').slider();
+        $('#enable_objectivity').click(function(){ $('#slide_objectivity').slider('enable') });
+        $('#disable_objectivity').click(function(){ $('#slide_objectivity').slider('disable') });
     </script>
 
   </body>
