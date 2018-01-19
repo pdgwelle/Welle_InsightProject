@@ -17,10 +17,10 @@ def index():
         text = request.form['text']
         tone = request.form['tone']
         objectivity = request.form['objectivity']
-        readability = request.form['readability']
+        complexity = request.form['complexity']
         source = request.form['source']
         text_list = db.retrieve_examples(text, source, 
-            ranks=[int(tone), -1*int(objectivity), int(readability)]) # actual data science term is subjectivity, but objectivity is likely easier for the user. -1 flips the ranking
+            ranks=[int(tone), -1*int(objectivity), -1*int(complexity)]) # actual data science term is subjectivity, but objectivity is likely easier for the user. -1 flips the ranking
         return render_template("index.html", text_list=text_list)
     else:
         return render_template("index.html")
