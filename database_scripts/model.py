@@ -1,6 +1,6 @@
 from mongoengine import *
 
-db = connect('ftm')
+db = connect('ftm_constucted_passages')
 
 class Parent_Document(Document):
     text = StringField()
@@ -21,10 +21,10 @@ class Parent_Document(Document):
 
 class Passage(Document):
     parent_doc = ReferenceField(Parent_Document, reverse_delete_rule=CASCADE)
-    paragraph_index = LongField()
+    passage_text = StringField()
 
-    def get_paragraph(self, offset=0):
-        return self.parent_doc.get_paragraph(self.paragraph_index + offset)
+    def get_paragraph(self):
+        return self.passage_text
 
     def __repr__(self):
         return '<Passage - Parent Document: %r Paragraph: %r>' % (self.parent_doc.title, self.paragraph_index)
