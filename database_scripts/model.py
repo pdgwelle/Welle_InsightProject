@@ -9,25 +9,22 @@ class Parent_Document(Document):
     doctype = StringField()
     url = StringField(unique=True)
 
-    def get_paragraph(self, paragraph_index):
-        paragraphs = self.text.split('\n\n')
-        if((paragraph_index >= len(paragraphs)) | (paragraph_index < 0)):
-            return ''
-        else:
-            return paragraphs[paragraph_index].replace('\n', ' ')
-
     def __repr__(self):
         return '<Parent_Document - Title: %r Author: %r>' % (self.title, self.author)
 
 class Passage(Document):
     parent_doc = ReferenceField(Parent_Document, reverse_delete_rule=CASCADE)
     passage_text = StringField()
+    polarity = FloatField()
+    subjectivity = FloatField()
+    readability = FloatField()
+    passage_index = LongField()
 
     def get_paragraph(self):
         return self.passage_text
 
     def __repr__(self):
-        return '<Passage - Parent Document: %r Paragraph: %r>' % (self.parent_doc.title, self.paragraph_index)
+        return '<Passage - Parent Document: %r>' % (self.parent_doc.title)
 
 class Word(Document):
 
