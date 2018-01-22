@@ -113,27 +113,6 @@ def get_metric_lists(text_list):
     readability_list = [get_readability(text_blob) for text_blob in text_list]
     return [polarity_list, subjectivity_list, readability_list]
 
-def doc2vec(text_list):
-    from gensim.models.doc2vec import LabeledSentence
-    for index, text in enumerate(text_list):                                                                                        
-        documents.append(LabeledSentence(words=text.words, tags=[u'SENT_'+str(index)]))  
-    model = Doc2Vec(documents, size=100, window=8, min_count=5, workers=4)
-    return model, documents
-
-def get_similarity_matrix(model, documents):
-    out_df = pd.DataFrame(index=range(len(documents)), columns=range(len(documents)))
-
-    for index, document in enumerate(documents):
-        temp_series = pd.Series(index=range(len(documents)), name=index)
-        tokens = document.words
-        new_vector = model.infer_vector(tokens)
-        sims = model.docvecs.most_similar([new_vector], topn=len(documents))
-        temp_df = pd.DataFrame(sims)
-        indices = pd.DataFrame(temp_df[0].str.split('_').tolist(), columns=['SENT', 'Indices'])['Indices'].astype(int).tolist()
-        out_df[index] = pd.Series(temp_df[1].values, index=indices, name=index)
-
-    return out_df
-
 def tf_idf(text_list):
     from sklearn.feature_extraction.text import TfidfVectorizer
     model = TfidfVectorizer()
