@@ -62,7 +62,7 @@ if __name__ == '__main__':
         if(len(text) < 30): continue
 
         try:
-            document_object = model.Parent_Document(text=text, title=title, url=url, doctype='article').save()
+            document_object = model.Parent_Document(text=text, title=title, unique_field=url, doctype='article').save()
             process_article_wait(document_object)
         except model.mongoengine.NotUniqueError:
             print("Article " + url + " already in database. Article skipped. If you would like to reload, please first delete.")

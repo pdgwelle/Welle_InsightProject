@@ -25,18 +25,30 @@ def process_book_wait(book_object, punctuation_droplist):
     thread.join()
 
 def process_book(book_object, punctuation_droplist):
-    text = book_object.text
-    passages = get_passages_from_text(text, book_object)
-    for index, passage in enumerate(passages):
+
+    def store_passage_object(passage):
         polarity, subjectivity, readability = get_passage_scores(passage)
         passage_utf8 = passage.encode('utf-8')
         passage_object = model.Passage(parent_doc=book_object, passage_text=passage_utf8, polarity=polarity,
             subjectivity=subjectivity, readability=readability, passage_index=index).save()
+        return passage_object
+
+    def update_word_object(passage, punctuation_droplist):
         for word in passage.split(' '):
             word = delete_all_chars(word, punctuation_droplist).lower()
             word_object = model.Word.get_word_object(word)
             if(word_object is not None):
                 word_object.update(add_to_set__passages=passage_object)
+
+    text = book_object.text
+    passages = get_passages_from_text(text, book_object)
+    passage_object_list = []
+    for index, passage in enumerate(passages):
+        passage_object = store_passage_object(passage)
+        passage_object_list.append(passage_object)
+        update_word_object(passage, punctuation_droplist)
+    book_object.passages = passage_object_list
+    book_object.save()
 
 def get_passages_from_text(text, book_object):
     sentences = split_into_sentences(text)
@@ -122,7 +134,7 @@ if __name__ == '__main__':
     print "Loading books..."
     tstart = datetime.now()
 
-    punctuation_droplist = string.punctuation.replace("-", "")
+    punctuation_droplist = string.punctuation
 
     with open('books.txt', 'r') as f:
         books = []
@@ -141,7 +153,7 @@ if __name__ == '__main__':
             title_utf8 = title.encode('utf-8')
             author_utf8 = author.encode('utf-8')
             doctype_utf8 = u'book'.encode('utf-8')
-            book_object = model.Parent_Document(text=text_utf8, title=title_utf8, author=author_utf8, url=author_utf8, doctype=doctype_utf8).save()
+            book_object = model.Parent_Document(text=text_utf8, title=title_utf8, author=author_utf8, doctype=doctype_utf8,     unique_field=title_utf8).save()
             process_book_wait(book_object, punctuation_droplist)
         except mongoengine.NotUniqueError:
             print "Book " + title + " by " + author + " already in database. Book skipped. If you would like to reload, please first delete."
