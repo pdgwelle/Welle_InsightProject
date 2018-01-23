@@ -13,17 +13,25 @@ from webapp import app
 @app.route('/')
 @app.route('/', methods=['POST'])
 def index():
-    if request.method == "POST":
-        text = request.form['text']
-        tone = request.form['tone']
-        objectivity = request.form['objectivity']
-        complexity = request.form['complexity']
-        source = request.form['source']
-        text_list = db.retrieve_examples(text, source, 
-            ranks=[int(tone), -1*int(objectivity), -1*int(complexity)]) # actual data science term is subjectivity, but objectivity is likely easier for the user. -1 flips the ranking
-        return render_template("index.html", text_list=text_list)
-    else:
+    if request.method != "POST":
         return render_template("index.html")
+    
+    else:
+        if request.form['mode'] == 'first_query':
+            query = request.form['query']
+            tone = request.form['tone']
+            objectivity = request.form['objectivity']
+            complexity = request.form['complexity']
+            source = request.form['source']
+            passage_list = db.retrieve_examples(query, source, 
+              ranks=[int(tone), -1*int(objectivity), -1*int(complexity)]) # actual data science term is subjectivity, but objectivity is likely easier for the user. -1 flips the ranking
+            return render_template("index.html", passage_list=passage_list, word=query)
+        
+        elif request.form['mode'] == 'get_similar':
+            word = request.form['word']
+            embedding = request.form['embedding']
+            passage_list = db.get_similar_passages(word, embedding)
+            return render_template("index.html", passage_list=passage_list, word=word)        
 
 @app.route('/test')
 @app.route('/test', methods=['POST'])

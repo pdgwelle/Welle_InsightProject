@@ -50,22 +50,13 @@
 
               <div class="col-sm-12 height_100">
                 <div class="input-group">
-                  <input name="text" class="form-control" placeholder="Search for...">
+                  <input name="query" class="form-control" placeholder="Search for...">
                   <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">Go!</button>
                   </span>
+                  <input name="mode" type="hidden" value="first_query">
                 </div><!-- /input-group -->
               </div><!-- /.col-lg-12 -->
-
-              {% if text_list %}
-                  <h3>Examples:</h3>
-                  {% for text in text_list %}
-                  <div class=col-sm-12>
-                    <blockquote class="text_quotes">{{text}}</blockquote>
-                    <a class = "left_margin" href="#">Get Similar Example!</a>
-                  </div>
-                  {% endfor %}
-              {% endif %}
 
             </div><!-- /.blog-main -->
 
@@ -97,9 +88,27 @@
                 <h4>Objectivity</h4>
                 <input id="slide_objectivity" name="objectivity" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
               </div><!-- sidebar-module-inset-->
-            </div><!-- /.blog-sidebar -->
-        
+            </div><!-- /.blog-sidebar -->        
         </form>
+
+        <div class="col-sm-8">
+            {% if passage_list %}
+              <h3>Examples:</h3>
+              {% for passage in passage_list %}
+              <form method="POST">
+                <div class=col-sm-12>
+                  <blockquote class="text_quotes">{{passage.passage_text}}</blockquote>
+                  <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
+                  <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
+                  <input type="hidden" name="word" value="{{word}}">
+                  <input name="mode" type="hidden" value="get_similar">
+                  <button class = "left_margin">Get Similar Example!</button>
+                </div>
+              </form>
+              {% endfor %}
+            {% endif %}
+        </div><!-- show example -->
+
       </div><!-- /.row -->
     </div><!-- /.container -->
 

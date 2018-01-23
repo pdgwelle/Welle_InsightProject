@@ -16,6 +16,8 @@ sns.set_context('talk')
 import tweepy
 import HTMLParser
 from textblob import TextBlob
+from gensim.models.doc2vec import Doc2Vec
+import ast
 
 import model
 import secrets
@@ -88,7 +90,7 @@ def gutenberg(word):
     passages_in_fiction = [passage for passage in passages if passage.parent_doc.doctype == 'book']
     text_list = [TextBlob(passage.get_paragraph()) for passage in passages_in_fiction]
 
-    return text_list
+    return passages_in_fiction, text_list
 
 def newspaper(word):
     word_object = model.Word.get_word_object(word)
@@ -98,20 +100,15 @@ def newspaper(word):
 
     return text_list
 
-def get_polarity(text_blob):
-    return text_blob.sentiment.polarity
-
-def get_subjectivity(text_blob):
-    return text_blob.sentiment.subjectivity
-
-def get_readability(text_blob):
-    return readability.getmeasures(text_blob.words)['readability grades']['FleschReadingEase']
-
-def get_metric_lists(text_list):
-    polarity_list = [get_polarity(text_blob) for text_blob in text_list]
-    subjectivity_list = [get_subjectivity(text_blob) for text_blob in text_list]
-    readability_list = [get_readability(text_blob) for text_blob in text_list]
-    return [polarity_list, subjectivity_list, readability_list]
+def get_metric_lists(passages):
+    polarity_list = []
+    subjectivity_list = []
+    readability_list = []
+    for passage in passages:
+        polarity_list.append(passage.polarity)
+        subjectivity_list.append(passage.subjectivity)
+        readability_list.append(passage.readability)
+    return polarity_list, subjectivity_list, readability_list
 
 def tf_idf(text_list):
     from sklearn.feature_extraction.text import TfidfVectorizer
@@ -129,10 +126,10 @@ def retrieve_examples(word, source, ranks):
             renormalized_array = (array - np.mean(array)) / np.std(array)
             return renormalized_array
 
-    def rank_posts(metric_lists, ranks):
-        np_polarity = np.array(metric_lists[0])
-        np_subj = np.array(metric_lists[1])
-        np_read = np.array(metric_lists[2])
+    def rank_posts(polarity_list, subjectivity_list, readability_list, ranks):
+        np_polarity = np.array(polarity_list)
+        np_subj = np.array(subjectivity_list)
+        np_read = np.array(readability_list)
 
         normalized_polarity = (np_polarity - np.mean(np_polarity)) / np.std(np_polarity)
         normalized_subj = (np_subj - np.mean(np_subj)) / np.std(np_subj)
@@ -145,49 +142,43 @@ def retrieve_examples(word, source, ranks):
         cumulative_score = modified_normalized_polarity + modified_normalized_subj + modified_normalized_read
         return cumulative_score
 
-    def get_upper_half_text(text, ranked_scores):
-        text = np.array(text)
-        ranked_scores = np.array(ranked_scores)
-        out_text = text[ranked_scores > np.median(ranked_scores)]
-        return out_text
+    def get_text_indices(ranked_scores):
+        def argpercentile(array, percentile):
+            index = int(float(percentile) * (len(array) - 1) + 0.5)
+            return np.argpartition(array, index)[index]
 
-    def shorten_text(text_list, word):
-        out_list = []
-        for text in text_list:
-            if(len(text) > 750):
-                sentence_index = np.where([word in array for array in np.array(text.lower().split('.'))])[0][0]
-                out_text = text.split('.')[sentence_index] + '.'
-                offset_list = [-1,1,-2,2,-3,3,-4,4,-5,5]
-                for offset in offset_list:
-                    if(len(out_text) > 100): break
-                    index = sentence_index + offset
-                    if(index < 0): continue
-                    if(offset < 0):
-                        out_text = text.split('.')[index] + '.' + out_text
-                    elif(offset > 0):
-                        out_text = out_text + text.split('.')[index] + '.'
-                out_text = out_text.strip()
-                out_list.append(out_text)
-            else:
-                out_list.append(text)
-        return out_list
+        index_1 = argpercentile(ranked_scores, 0.6)
+        index_2 = argpercentile(ranked_scores, 0.8)
+        index_3 = argpercentile(ranked_scores, 0.9)
+        return index_1, index_2, index_3
 
     if(source == 'fiction'):
-        text = gutenberg(word)
+        passages, text = gutenberg(word)
     elif(source == 'news'):
         text = newspaper(word)
     elif(source == 'twitter'):
         text = twitter(word)
 
-    metric_lists = get_metric_lists(text)
-    ranked_scores = rank_posts(metric_lists, ranks)
-    upper_half_text = get_upper_half_text(text, ranked_scores)
+    polarity_list, subjectivity_list, readability_list = get_metric_lists(passages)
+    ranked_scores = rank_posts(polarity_list, subjectivity_list, readability_list, ranks)
+    index_1, index_2, index_3 = get_text_indices(ranked_scores)
 
-    text_list = random.sample(text, 3)
-    text_list = shorten_text(text_list, word)
-    text_list = [unicode(text) for text in text_list]
+    out_passages = [passages[index_1], passages[index_2], passages[index_3]]
 
-    return text_list
+    return out_passages
+
+def get_similar_passages(word, example_embedding):
+
+    def cosine_similarity(v, M):
+        return np.inner(v, M) / (np.linalg.norm(v) * np.linalg.norm(M, axis=1))
+
+    passages = model.Word.get_word_object(word).passages
+    embeddings = [passage.document_embedding for passage in passages]
+
+    similarity_scores = cosine_similarity(ast.literal_eval(example_embedding), embeddings)
+    index_1, index_2, index_3 = (-similarity_scores).argsort()[:3]
+
+    return [passages[index_1], passages[index_2], passages[index_3]]
 
 if __name__ == '__main__':
     
