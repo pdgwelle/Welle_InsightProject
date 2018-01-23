@@ -38,11 +38,15 @@ def delete_all_chars(word, chars):
 
 if __name__ == '__main__':
     
+    print("Training model...")
     passages = model.Passage.objects()
     passage_text_list = [passage.passage_text for passage in passages]
 
     d2v_model, documents = generate_doc2vec_model(passage_text_list)
 
+    print("Storing passage vectors...")
     for index, passage in enumerate(passages):
         passage.document_embedding = d2v_model.docvecs[index].tolist()
         passage.save()
+
+    d2v_model.save('assets/d2v_model')
