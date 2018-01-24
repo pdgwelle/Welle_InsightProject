@@ -101,6 +101,7 @@
                   <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
                   <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
                   <input type="hidden" name="word" value="{{word}}">
+                  <input type="hidden" name="source" value="{{source}}">
                   <input name="mode" type="hidden" value="get_similar">
                   <button class = "left_margin">Get Similar Example!</button>
                 </div>
@@ -111,7 +112,6 @@
 
       </div><!-- /.row -->
     </div><!-- /.container -->
-
 
     <script type='text/javascript'>
         $('#slide_complexity').slider();

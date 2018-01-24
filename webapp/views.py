@@ -24,14 +24,15 @@ def index():
             complexity = request.form['complexity']
             source = request.form['source']
             passage_list = db.retrieve_examples(query, source, 
-              ranks=[int(tone), -1*int(objectivity), -1*int(complexity)]) # actual data science term is subjectivity, but objectivity is likely easier for the user. -1 flips the ranking
-            return render_template("index.html", passage_list=passage_list, word=query)
+              ranks=[int(tone), -1*int(objectivity), -1*int(complexity)]) # actual terms are subjectivity and readability, so flip
+            return render_template("index.html", passage_list=passage_list, word=query, source=source)
         
         elif request.form['mode'] == 'get_similar':
             word = request.form['word']
             embedding = request.form['embedding']
-            passage_list = db.get_similar_passages(word, embedding)
-            return render_template("index.html", passage_list=passage_list, word=word)        
+            source = request.form['source']
+            passage_list = db.get_similar_passages(word, embedding, source)
+            return render_template("index.html", passage_list=passage_list, word=word, source=source)        
 
 @app.route('/test')
 @app.route('/test', methods=['POST'])

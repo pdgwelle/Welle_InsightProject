@@ -98,7 +98,7 @@ def newspaper(word):
     passages_in_newspaper = [passage for passage in passages if passage.parent_doc.doctype == 'article']
     text_list = [TextBlob(passage.get_paragraph()) for passage in passages_in_newspaper]
 
-    return text_list
+    return passages_in_newspaper, text_list
 
 def get_metric_lists(passages):
     polarity_list = []
@@ -155,7 +155,7 @@ def retrieve_examples(word, source, ranks):
     if(source == 'fiction'):
         passages, text = gutenberg(word)
     elif(source == 'news'):
-        text = newspaper(word)
+        passages, text = newspaper(word)
     elif(source == 'twitter'):
         text = twitter(word)
 
@@ -167,12 +167,16 @@ def retrieve_examples(word, source, ranks):
 
     return out_passages
 
-def get_similar_passages(word, example_embedding):
+def get_similar_passages(word, example_embedding, source):
 
     def cosine_similarity(v, M):
         return np.inner(v, M) / (np.linalg.norm(v) * np.linalg.norm(M, axis=1))
 
     passages = model.Word.get_word_object(word).passages
+    if(source == 'fiction'): doctype = 'book'
+    if(source == 'news'): doctype = 'article'
+    passages = [passage for passage in passages if passage.parent_doc.doctype == doctype]
+
     embeddings = [passage.document_embedding for passage in passages]
 
     similarity_scores = cosine_similarity(ast.literal_eval(example_embedding), embeddings)
