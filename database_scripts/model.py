@@ -20,6 +20,9 @@ class Passage(Document):
     subjectivity = FloatField()
     readability = FloatField()
     passage_index = LongField()
+    document_embedding_doc2vec = ListField(FloatField())
+    document_embedding_tfidf = ListField(FloatField())
+    document_embedding_word2vec = ListField(FloatField())
     document_embedding = ListField(FloatField())
 
     def get_paragraph(self):
