@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import pickle
 import random
 
@@ -91,6 +92,17 @@ def retrieve_examples(word, source, ranks):
         index_3 = argpercentile(ranked_scores, 0.9)
         return index_1, index_2, index_3
 
+    def correct_text(in_list):
+        text_list = [x[0] for x in in_list]
+        out_text = []
+        for text in text_list:
+            flanked_with_underscores = re.findall("\_[^_]+\_", text)
+            for f in flanked_with_underscores:
+                text = text.replace(f, f[1:-1])
+            out_text.append(text)
+        out_list = [(text, entry[1], entry[2]) for (text, entry) in zip(out_text, in_list)]
+        return out_list
+
     if(source == 'twitter'):
         out_passages, out_html = twitter_utils.retrieve_examples(word, ranks)
         return out_passages
@@ -104,8 +116,10 @@ def retrieve_examples(word, source, ranks):
     index_1, index_2, index_3 = get_text_indices(ranked_scores)
 
     out_passages = [passages[index_1], passages[index_2], passages[index_3]]
+    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author) for passage in out_passages]
+    out_list = correct_text(out_list)
 
-    return out_passages
+    return out_list
 
 def get_similar_passages(word, example_embedding, source):
 
