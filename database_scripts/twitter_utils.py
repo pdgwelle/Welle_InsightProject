@@ -1,6 +1,9 @@
+import numpy as np
+
 import tweepy
 
 import textblob
+import textacy
 import HTMLParser
 
 import secrets
@@ -8,6 +11,34 @@ import secrets
 auth = tweepy.OAuthHandler(secrets.consumer_key, secrets.consumer_secret) 
 auth.set_access_token(secrets.access_token, secrets.access_token_secret) 
 twitter_api = tweepy.API(auth)
+
+def retrieve_examples(word=u"happy", ranks=[0,0,0]):
+
+    text_list, tweet_list = twitter(word)
+
+    url_list, appended_list = get_url_list(tweet_list)
+    html_list = get_html_list(url_list)
+
+    short_text_list = [text for (appended, text) in zip(appended_list, text_list) if appended]
+    short_tweet_list = [tweet for (appended, tweet) in zip(appended_list, tweet_list) if appended]
+
+    polarity_list, subjectivity_list, readability_list = [[],[],[]]
+    for text in short_text_list:
+        polarity, subjectivity, readability = get_passage_scores(text)
+        polarity_list.append(polarity)
+        subjectivity_list.append(subjectivity)
+        readability_list.append(readability)
+
+    ranked_scores = rank_posts(polarity_list, subjectivity_list, readability_list, ranks)
+    index_1, index_2, index_3 = get_text_indices(ranked_scores)
+
+    out_text = [short_text_list[index_1], short_text_list[index_2], short_text_list[index_3]]
+    out_passages = [short_tweet_list[index_1], short_tweet_list[index_2], short_tweet_list[index_3]]
+    out_html = [html_list[index_1], html_list[index_2], html_list[index_3]]
+
+    ## possibly submit tweet.user.screen_name
+
+    return out_text, out_html
 
 def twitter(word):
     curs = tweepy.Cursor(twitter_api.search, q=word, lang="en", result_type="popular", 
@@ -17,10 +48,9 @@ def twitter(word):
 
     text_list = []
     for tweet in tweet_list:
-        if (not tweet.retweeted) and ('RT @' not in tweet.full_text):         
+        if (not tweet.retweeted):         
             text = clean_tweet(tweet)
-            words = textblob.TextBlob(text)
-            text_list.append(words)
+            text_list.append(text)
 
     return text_list, tweet_list
 
@@ -31,7 +61,6 @@ def clean_tweet(tweet):
 
     html_parser = HTMLParser.HTMLParser()
     text = html_parser.unescape(text)
-    text = text.encode("ascii","ignore")
 
     slices = []
     #Strip out the urls.
@@ -66,7 +95,7 @@ def clean_tweet(tweet):
     for s in slices:
         text = text[:s['start']] + text[s['stop']:]
         
-    return text.strip()
+    return unicode(text.strip())
 
 def get_url_list(tweet_list):
     def append_from_urls(tweet, url_list, appended):
@@ -97,7 +126,6 @@ def get_url_list(tweet_list):
                         break
         return url_list, appended
 
-
     url_list = []
     appended_list = []
     for tweet in tweet_list:
@@ -115,9 +143,43 @@ def get_html_list(url_list):
         html_list.append(html)
     return html_list
 
-if __name__ == '__main__':
+def get_passage_scores(passage):
+    doc = textacy.Doc(passage, lang=u"en_core_web_sm")
+    textstats = textacy.TextStats(doc)
+    readability = textstats.flesch_readability_ease
+    polarity, subjectivity = textblob.TextBlob(passage).sentiment
+    return polarity, subjectivity, readability
 
-    text_list, tweet_list = twitter(u'happy')
-    url_list, appended_list = get_url_list(tweet_list)
-    html_list = get_html_list(url_list)
-    short_text_list = [text for (appended, text) in zip(appended_list, text_list) if appended]
+def rank_posts(polarity_list, subjectivity_list, readability_list, ranks):
+    np_polarity = np.array(polarity_list)
+    np_subj = np.array(subjectivity_list)
+    np_read = np.array(readability_list)
+
+    normalized_polarity = (np_polarity - np.mean(np_polarity)) / np.std(np_polarity)
+    normalized_subj = (np_subj - np.mean(np_subj)) / np.std(np_subj)
+    normalized_read = (np_read - np.mean(np_read)) / np.std(np_read)
+
+    modified_normalized_polarity = modify_normalized_distribution(normalized_polarity, ranks[0])
+    modified_normalized_subj = modify_normalized_distribution(normalized_subj, ranks[1])
+    modified_normalized_read = modify_normalized_distribution(normalized_read, ranks[2])
+
+    cumulative_score = modified_normalized_polarity + modified_normalized_subj + modified_normalized_read
+    return cumulative_score
+
+def get_text_indices(ranked_scores):
+    def argpercentile(array, percentile):
+        index = int(float(percentile) * (len(array) - 1) + 0.5)
+        return np.argpartition(array, index)[index]
+
+    index_1 = argpercentile(ranked_scores, 0.6)
+    index_2 = argpercentile(ranked_scores, 0.8)
+    index_3 = argpercentile(ranked_scores, 0.9)
+    return index_1, index_2, index_3
+
+def modify_normalized_distribution(normalized_array, rank):
+    if(rank == 1): return normalized_array
+    elif(rank == -1): return -1 * normalized_array
+    elif(rank == 0):
+        array = -1 * np.abs(normalized_array)
+        renormalized_array = (array - np.mean(array)) / np.std(array)
+        return renormalized_array

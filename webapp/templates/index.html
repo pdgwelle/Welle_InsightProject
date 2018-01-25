@@ -92,22 +92,54 @@
         </form>
 
         <div class="col-sm-8">
-            {% if passage_list %}
-              <h3>Examples:</h3>
-              {% for passage in passage_list %}
-              <form method="POST">
-                <div class=col-sm-12>
-                  <blockquote class="text_quotes">{{passage.passage_text}}</blockquote>
-                  <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
-                  <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
-                  <input type="hidden" name="word" value="{{word}}">
-                  <input type="hidden" name="source" value="{{source}}">
-                  <input name="mode" type="hidden" value="get_similar">
-                  <button class = "left_margin">Get Similar Example!</button>
-                </div>
-              </form>
-              {% endfor %}
+            {% if source == "fiction" %}
+              {% if passage_list %}
+                <h3>Examples:</h3>
+                {% for passage in passage_list %}
+                <form method="POST">
+                  <div class=col-sm-12>
+                    <blockquote class="text_quotes">{{passage.passage_text}}</blockquote>
+                    <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
+                    <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
+                    <input type="hidden" name="word" value="{{word}}">
+                    <input type="hidden" name="source" value="{{source}}">
+                    <input name="mode" type="hidden" value="get_similar">
+                    <button class = "left_margin">Get Similar Example!</button>
+                  </div>
+                </form>
+                {% endfor %}
+              {% endif %}
             {% endif %}
+
+            {% if source == "news" %}
+              {% if passage_list %}
+                <h3>Examples:</h3>
+                {% for passage in passage_list %}
+                <form method="POST">
+                  <div class=col-sm-12>
+                    <blockquote class="text_quotes">{{passage.passage_text}}</blockquote>
+                    <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
+                    <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
+                    <input type="hidden" name="word" value="{{word}}">
+                    <input type="hidden" name="source" value="{{source}}">
+                    <input name="mode" type="hidden" value="get_similar">
+                    <button class = "left_margin">Get Similar Example!</button>
+                  </div>
+                </form>
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+
+            {% if source == "twitter" %}
+              {% if passage_list %}
+                {% for passage in passage_list %}
+                  <div class=col-sm-12>
+                  <blockquote class="text_quotes">{{passage}}</blockquote>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+
         </div><!-- show example -->
 
       </div><!-- /.row -->

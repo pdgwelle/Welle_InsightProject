@@ -21,68 +21,7 @@ import ast
 
 import model
 import secrets
-
-auth = tweepy.OAuthHandler(secrets.consumer_key, secrets.consumer_secret) 
-auth.set_access_token(secrets.access_token, secrets.access_token_secret) 
-twitter_api = tweepy.API(auth)
-
-def twitter(word):
-    curs = tweepy.Cursor(twitter_api.search, q=word, lang="en", since="2018-01-01", tweet_mode='extended').items(100)
-    tweet_list = []
-    for tweet in curs: tweet_list.append(tweet) 
-
-    text_list = []
-    for tweet in tweet_list:
-        if (not tweet.retweeted) and ('RT @' not in tweet.full_text):         
-            text = clean_tweet(tweet)
-            words = TextBlob(text)
-            text_list.append(words)
-
-    return text_list
-
-#Gets the text, sans links, hashtags, mentions, media, and symbols.
-def clean_tweet(tweet):
-    # Source: https://gist.github.com/timothyrenner/dd487b9fd8081530509c
-    text = tweet.full_text
-
-    html_parser = HTMLParser.HTMLParser()
-    text = html_parser.unescape(text)
-    text = text.encode("ascii","ignore")
-
-    slices = []
-    #Strip out the urls.
-    if 'urls' in tweet.entities:
-        for url in tweet.entities['urls']:
-            slices += [{'start': url['indices'][0], 'stop': url['indices'][1]}]
-
-    #Strip out the hashtags.
-    if 'hashtags' in tweet.entities:
-        for tag in tweet.entities['hashtags']:
-            slices += [{'start': tag['indices'][0], 'stop': tag['indices'][1]}]
-
-    # #Strip out the user mentions.
-    # if 'user_mentions' in tweet.entities:
-    #     for men in tweet.entities['user_mentions']:
-    #         slices += [{'start': men['indices'][0], 'stop': men['indices'][1]}]
-
-    #Strip out the media.
-    if 'media' in tweet.entities:
-        for med in tweet.entities['media']:
-            slices += [{'start': med['indices'][0], 'stop': med['indices'][1]}]
-
-    #Strip out the symbols.
-    if 'symbols' in tweet.entities:
-        for sym in tweet.entities['symbols']:
-            slices += [{'start': sym['indices'][0], 'stop': sym['indices'][1]}]
-
-    # Sort the slices from highest start to lowest.
-    slices = sorted(slices, key=lambda x: -x['start'])
-
-    #No offsets, since we're sorted from highest to lowest.
-    for s in slices:
-        text = text[:s['start']] + text[s['stop']:]
-        
-    return text.strip()
+import twitter_utils
 
 def gutenberg(word):
     word_object = model.Word.get_word_object(word)
@@ -152,12 +91,13 @@ def retrieve_examples(word, source, ranks):
         index_3 = argpercentile(ranked_scores, 0.9)
         return index_1, index_2, index_3
 
-    if(source == 'fiction'):
+    if(source == 'twitter'):
+        out_passages, out_html = twitter_utils.retrieve_examples(word, ranks)
+        return out_passages
+    elif(source == 'fiction'):
         passages, text = gutenberg(word)
     elif(source == 'news'):
         passages, text = newspaper(word)
-    elif(source == 'twitter'):
-        text = twitter(word)
 
     polarity_list, subjectivity_list, readability_list = get_metric_lists(passages)
     ranked_scores = rank_posts(polarity_list, subjectivity_list, readability_list, ranks)
