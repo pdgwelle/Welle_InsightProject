@@ -26,7 +26,6 @@
 
     <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
 
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -91,22 +90,21 @@
             </div><!-- /.blog-sidebar -->        
         </form>
 
-        <div class="col-sm-8">
+        <div class="col-sm-8" style="margin-top: -240px">
             {% if source == "fiction" %}
               {% if passage_list %}
-                <h3>Examples:</h3>
-                {% for passage in passage_list %}
-                <form method="POST">
-                  <div class=col-sm-12>
-                    <blockquote class="text_quotes">{{passage.passage_text}}</blockquote>
-                    <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
-                    <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
-                    <input type="hidden" name="word" value="{{word}}">
-                    <input type="hidden" name="source" value="{{source}}">
-                    <input name="mode" type="hidden" value="get_similar">
-                    <button class = "left_margin">Get Similar Example!</button>
-                  </div>
-                </form>
+                {% for passage in passage_list %}                  
+                <div class="col-sm-12">
+                  <form method="POST">
+                      <blockquote class="text_quotes">{{passage.passage_text}}</blockquote>
+                      <p>From {{passage.parent_doc.title}} by {{passage.parent_doc.author}}</p>
+                      <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
+                      <input type="hidden" name="word" value="{{word}}">
+                      <input type="hidden" name="source" value="{{source}}">
+                      <input name="mode" type="hidden" value="get_similar">
+                      <button class = "left_margin">Get Similar Example!</button>
+                  </form>
+                </div>
                 {% endfor %}
               {% endif %}
             {% endif %}

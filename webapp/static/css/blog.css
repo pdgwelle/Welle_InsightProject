@@ -193,3 +193,7 @@ label{
 .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"], .radio input[type="radio"], .radio-inline input[type="radio"]{
   margin-left: 0px;
 }
+
+.negative_margin{
+  margin-top: -100px;
+}
