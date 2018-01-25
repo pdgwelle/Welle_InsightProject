@@ -159,7 +159,7 @@ label{
  */
 
 .blog-footer {
-  padding: 40px 0;
+  padding: 10px 0;
   color: #999;
   text-align: center;
   background-color: #f9f9f9;
@@ -195,5 +195,6 @@ label{
 }
 
 .negative_margin{
-  margin-top: -100px;
+  margin-top: -240px;
+  margin-bottom: 40px;
 }

@@ -90,7 +90,7 @@
             </div><!-- /.blog-sidebar -->        
         </form>
 
-        <div class="col-sm-8" style="margin-top: -240px">
+        <div class="col-sm-8 negative_margin">
             {% if source == "fiction" %}
               {% if passage_list %}
                 {% for passage in passage_list %}                  
@@ -142,6 +142,12 @@
 
       </div><!-- /.row -->
     </div><!-- /.container -->
+
+    <footer class="blog-footer">
+      <p>
+        <h4><a href="#">Back to top</a></h4>
+      </p>
+    </footer>
 
     <script type='text/javascript'>
         $('#slide_complexity').slider();
