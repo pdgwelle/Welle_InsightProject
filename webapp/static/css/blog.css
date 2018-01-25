@@ -162,7 +162,6 @@ label{
   padding: 10px 0;
   color: #999;
   text-align: center;
-  background-color: #f9f9f9;
   border-top: 1px solid #e5e5e5;
 }
 .blog-footer p:last-child {
@@ -197,4 +196,5 @@ label{
 .negative_margin{
   margin-top: -240px;
   margin-bottom: 40px;
+  min-height: 600px;
 }
