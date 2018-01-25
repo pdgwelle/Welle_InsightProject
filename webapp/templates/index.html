@@ -96,7 +96,7 @@
                 {% for passage in passage_list %}                  
                 <div class="col-sm-12">
                   <form method="POST">
-                      <blockquote class="text_quotes">{{passage[0]}}</blockquote>
+                      <blockquote class="text_quotes">{{passage[0]|safe}}</blockquote>
                       <p>From {{passage[1]}} by {{passage[2]}}</p>
                       <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
                       <input type="hidden" name="word" value="{{word}}">
