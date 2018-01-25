@@ -17,7 +17,6 @@ sns.set_context('talk')
 import tweepy
 import HTMLParser
 from textblob import TextBlob
-from gensim.models.doc2vec import Doc2Vec
 import ast
 
 import model
@@ -49,12 +48,6 @@ def get_metric_lists(passages):
         subjectivity_list.append(passage.subjectivity)
         readability_list.append(passage.readability)
     return polarity_list, subjectivity_list, readability_list
-
-def tf_idf(text_list):
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    model = TfidfVectorizer()
-    result = model.fit_transform([str(text) for text in text_list])
-    return result
 
 def retrieve_examples(word, source, ranks):
 
@@ -92,18 +85,6 @@ def retrieve_examples(word, source, ranks):
         index_3 = argpercentile(ranked_scores, 0.9)
         return index_1, index_2, index_3
 
-    def correct_text(word, in_list):
-        text_list = [x[0] for x in in_list]
-        out_text = []
-        for text in text_list:
-            flanked_with_underscores = re.findall("\_[^_]+\_", text)
-            for f in flanked_with_underscores:
-                text = text.replace(f, f[1:-1])
-            text = text.replace(word, u"<strong>" + word + "</strong>")
-            out_text.append(text)
-        out_list = [(text, entry[1], entry[2]) for (text, entry) in zip(out_text, in_list)]
-        return out_list
-
     if(source == 'twitter'):
         out_passages, out_html = twitter_utils.retrieve_examples(word, ranks)
         return out_passages
@@ -117,9 +98,21 @@ def retrieve_examples(word, source, ranks):
     index_1, index_2, index_3 = get_text_indices(ranked_scores)
 
     out_passages = [passages[index_1], passages[index_2], passages[index_3]]
-    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author) for passage in out_passages]
+    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding) for passage in out_passages]
     out_list = correct_text(word, out_list)
 
+    return out_list
+
+def correct_text(word, in_list):
+    text_list = [x[0] for x in in_list]
+    out_text = []
+    for text in text_list:
+        flanked_with_underscores = re.findall("\_[^_]+\_", text)
+        for f in flanked_with_underscores:
+            text = text.replace(f, f[1:-1])
+        text = text.replace(word, u"<strong>" + word + "</strong>")
+        out_text.append(text)
+    out_list = [(text, entry[1], entry[2], entry[3]) for (text, entry) in zip(out_text, in_list)]
     return out_list
 
 def get_similar_passages(word, example_embedding, source):
@@ -136,8 +129,11 @@ def get_similar_passages(word, example_embedding, source):
 
     similarity_scores = cosine_similarity(ast.literal_eval(example_embedding), embeddings)
     index_1, index_2, index_3 = (-similarity_scores).argsort()[:3]
-
-    return [passages[index_1], passages[index_2], passages[index_3]]
+    out_passages = [passages[index_1], passages[index_2], passages[index_3]]
+    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding) for passage in out_passages]
+    out_list = correct_text(word, out_list)
+       
+    return out_list 
 
 if __name__ == '__main__':
     
