@@ -95,7 +95,7 @@ def retrieve_examples(word, source, ranks):
 
     polarity_list, subjectivity_list, readability_list = get_metric_lists(passages)
     ranked_scores = rank_posts(polarity_list, subjectivity_list, readability_list, ranks)
-    index_1, index_2, index_3 = get_text_indices(ranked_scores)
+    index_1, index_2, index_3 = (-ranked_scores).argsort()[:3]
 
     out_passages = [passages[index_1], passages[index_2], passages[index_3]]
     out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding) for passage in out_passages]
