@@ -1,6 +1,6 @@
 from mongoengine import *
 
-db = connect('ftm_constucted_passages')
+db = connect('ftm_constucted_passages_long')
 
 class Parent_Document(Document):
     text = StringField()
