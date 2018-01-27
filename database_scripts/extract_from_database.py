@@ -87,7 +87,7 @@ def retrieve_examples(word, source, ranks):
 
     if(source == 'twitter'):
         out_passages, out_html = twitter_utils.retrieve_examples(word, ranks)
-        return out_passages
+        return out_html
     elif(source == 'fiction'):
         passages, text = gutenberg(word)
     elif(source == 'news'):

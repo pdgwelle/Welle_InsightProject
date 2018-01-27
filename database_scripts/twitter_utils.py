@@ -16,24 +16,21 @@ def retrieve_examples(word=u"happy", ranks=[0,0,0]):
 
     text_list, tweet_list = twitter(word)
 
-    url_list, appended_list = get_url_list(tweet_list)
+    url_list = build_url_list(tweet_list)
     html_list = get_html_list(url_list)
 
-    short_text_list = [text for (appended, text) in zip(appended_list, text_list) if appended]
-    short_tweet_list = [tweet for (appended, tweet) in zip(appended_list, tweet_list) if appended]
-
     polarity_list, subjectivity_list, readability_list = [[],[],[]]
-    for text in short_text_list:
+    for text in text_list:
         polarity, subjectivity, readability = get_passage_scores(text)
         polarity_list.append(polarity)
         subjectivity_list.append(subjectivity)
         readability_list.append(readability)
 
     ranked_scores = rank_posts(polarity_list, subjectivity_list, readability_list, ranks)
-    index_1, index_2, index_3 = get_text_indices(ranked_scores)
+    index_1, index_2, index_3 = (-ranked_scores).argsort()[:3]
 
-    out_text = [short_text_list[index_1], short_text_list[index_2], short_text_list[index_3]]
-    out_passages = [short_tweet_list[index_1], short_tweet_list[index_2], short_tweet_list[index_3]]
+    out_text = [text_list[index_1], text_list[index_2], text_list[index_3]]
+    out_passages = [tweet_list[index_1], tweet_list[index_2], tweet_list[index_3]]
     out_html = [html_list[index_1], html_list[index_2], html_list[index_3]]
 
     ## possibly submit tweet.user.screen_name
@@ -135,6 +132,16 @@ def get_url_list(tweet_list):
         appended_list.append(appended)
 
     return url_list, appended_list
+
+def build_url_list(tweet_list):
+    url_list = []
+
+    for tweet in tweet_list:
+        post_id = tweet.id_str
+        user_name = tweet.author.screen_name
+        url = u"http://twitter.com/" + user_name + u"/status/" + post_id
+        url_list.append(url)
+    return url_list
 
 def get_html_list(url_list):
     html_list = []

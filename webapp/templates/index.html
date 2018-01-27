@@ -130,9 +130,7 @@
             {% if source == "twitter" %}
               {% if passage_list %}
                 {% for passage in passage_list %}
-                  <div class=col-sm-12>
-                  <blockquote class="text_quotes">{{passage}}</blockquote>
-                  </div>
+                  {{passage|safe}}
                 {% endfor %}
               {% endif %}
             {% endif %}
