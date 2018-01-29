@@ -23,7 +23,7 @@ def process_article(document_object, punctuation_droplist):
     def store_passage_object(passage, document_object):
         polarity, subjectivity, readability = get_passage_scores(passage)
         passage_object = model.Passage(parent_doc=document_object, passage_text=passage, polarity=polarity,
-            subjectivity=subjectivity, readability=readability, passage_index=index).save()
+            subjectivity=subjectivity, readability=readability, passage_index=index, n_showed=0, n_clicked=0).save()
         return passage_object
 
     def update_word_object(passage, punctuation_droplist):

@@ -101,6 +101,7 @@
                       <input type="hidden" name="embedding" value="{{passage[3]}}">
                       <input type="hidden" name="word" value="{{word}}">
                       <input type="hidden" name="source" value="{{source}}">
+                      <input type="hidden" name="doc_id" value="{{passage[4]}}">
                       <input name="mode" type="hidden" value="get_similar">
                       <button class = "left_margin">Get Similar Example!</button>
                   </form>
@@ -116,9 +117,10 @@
                   <div class=col-sm-12>
                     <blockquote class="text_quotes">{{passage[0]|safe}}</blockquote>
                     <p>From {{passage[1]}} by {{passage[2]}}</p>
-                    <input type="hidden" name="embedding" value="{{passage.document_embedding}}">
+                    <input type="hidden" name="embedding" value="{{passage[3]}}">
                     <input type="hidden" name="word" value="{{word}}">
                     <input type="hidden" name="source" value="{{source}}">
+                    <input type="hidden" name="doc_id" value="{{passage[4]}}">
                     <input name="mode" type="hidden" value="get_similar">
                     <button class = "left_margin">Get Similar Example!</button>
                   </div>

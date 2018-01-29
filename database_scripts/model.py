@@ -24,6 +24,8 @@ class Passage(Document):
     document_embedding_tfidf = ListField(FloatField())
     document_embedding_word2vec = ListField(FloatField())
     document_embedding = ListField(FloatField())
+    n_showed = LongField(default=0)
+    n_clicked = LongField(default=0)
 
     def get_paragraph(self):
         return self.passage_text

@@ -99,6 +99,3 @@ if __name__ == '__main__':
             if(n_words > 0): passage.document_embedding_word2vec = (vector_sum / float(n_words)).tolist()
             else: passage.document_embedding_word2vec = vector_sum.tolist()
             passage.save()
-
-
-

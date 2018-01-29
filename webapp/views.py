@@ -32,7 +32,8 @@ def index():
               word = request.form['word'].lower()
               embedding = request.form['embedding']
               source = request.form['source']
-              passage_list = db.get_similar_passages(word, embedding, source)
+              selected_passage = request.form['doc_id']
+              passage_list = db.get_similar_passages(word, embedding, source, selected_passage)
               return render_template("index.html", passage_list=passage_list, word=word, source=source)        
         except:
           return render_template("index.html", source="error")

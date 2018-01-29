@@ -30,7 +30,7 @@ def process_book(book_object, punctuation_droplist):
         polarity, subjectivity, readability = get_passage_scores(passage)
         passage_utf8 = passage.encode('utf-8')
         passage_object = model.Passage(parent_doc=book_object, passage_text=passage_utf8, polarity=polarity,
-            subjectivity=subjectivity, readability=readability, passage_index=index).save()
+            subjectivity=subjectivity, readability=readability, passage_index=index, n_showed=0, n_clicked=0).save()
         return passage_object
 
     def update_word_object(passage, punctuation_droplist):

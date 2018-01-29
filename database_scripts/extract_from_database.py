@@ -98,7 +98,7 @@ def retrieve_examples(word, source, ranks):
     index_1, index_2, index_3 = (-ranked_scores).argsort()[:3]
 
     out_passages = [passages[index_1], passages[index_2], passages[index_3]]
-    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding) for passage in out_passages]
+    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding, passage.id) for passage in out_passages]
     out_list = correct_text(word, out_list)
 
     return out_list
@@ -113,13 +113,17 @@ def correct_text(word, in_list):
         text = text.replace(word, u"<strong>" + word + "</strong>")
         text = text.replace(word.capitalize(), u"<strong>" + word.capitalize() + "</strong>")
         out_text.append(text)
-    out_list = [(text, entry[1], entry[2], entry[3]) for (text, entry) in zip(out_text, in_list)]
+    out_list = [(text, entry[1], entry[2], entry[3], entry[4]) for (text, entry) in zip(out_text, in_list)]
     return out_list
 
-def get_similar_passages(word, example_embedding, source):
+def get_similar_passages(word, example_embedding, source, doc_id):
 
     def cosine_similarity(v, M):
         return np.inner(v, M) / (np.linalg.norm(v) * np.linalg.norm(M, axis=1))
+
+    selected_passage = model.Passage.objects(id=doc_id)[0]
+    selected_passage.n_clicked+=1
+    selected_passage.save()
 
     passages = model.Word.get_word_object(word).passages
     if(source == 'fiction'): doctype = 'book'
@@ -131,10 +135,16 @@ def get_similar_passages(word, example_embedding, source):
     similarity_scores = cosine_similarity(ast.literal_eval(example_embedding), embeddings)
     index_1, index_2, index_3 = (-similarity_scores).argsort()[:3]
     out_passages = [passages[index_1], passages[index_2], passages[index_3]]
-    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding) for passage in out_passages]
+    update_metrics_out_passages(out_passages)
+    out_list = [(passage.passage_text, passage.parent_doc.title, passage.parent_doc.author, passage.document_embedding, passage.id) for passage in out_passages]
     out_list = correct_text(word, out_list)
        
     return out_list 
+
+def update_metrics_out_passages(out_passages):
+    for passage in out_passages:
+        passage.n_showed+=1
+        passage.save()
 
 if __name__ == '__main__':
     
