@@ -19,7 +19,7 @@ def index():
     else:
         try:
           if request.form['mode'] == 'first_query':
-              query = request.form['query']
+              query = request.form['query'].lower()
               tone = request.form['tone']
               objectivity = request.form['objectivity']
               complexity = request.form['complexity']
@@ -29,7 +29,7 @@ def index():
               return render_template("index.html", passage_list=passage_list, word=query, source=source)
           
           elif request.form['mode'] == 'get_similar':
-              word = request.form['word']
+              word = request.form['word'].lower()
               embedding = request.form['embedding']
               source = request.form['source']
               passage_list = db.get_similar_passages(word, embedding, source)

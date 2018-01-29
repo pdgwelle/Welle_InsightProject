@@ -111,6 +111,7 @@ def correct_text(word, in_list):
         for f in flanked_with_underscores:
             text = text.replace(f, f[1:-1])
         text = text.replace(word, u"<strong>" + word + "</strong>")
+        text = text.replace(word.capitalize(), u"<strong>" + word.capitalize() + "</strong>")
         out_text.append(text)
     out_list = [(text, entry[1], entry[2], entry[3]) for (text, entry) in zip(out_text, in_list)]
     return out_list
