@@ -135,6 +135,15 @@
               {% endif %}
             {% endif %}
 
+            {% if source == "error" %}
+              <h3>Woops! We've encountered an error.</h3>
+              <p>Please note:</p>
+              <ul>
+                <li>Due to twitter's api, we only get 15 requests every 15 minutes. If you're trying to use the twitter functionality and you're running into this error, try again in a few minutes.</li>
+                <li>Otherwise, it's likely we do not have sufficient text in our current corpus to serve you quality examples. Please try another word while we expand our database. Thanks!</li>
+              </ul>
+            {% endif %}
+            
         </div><!-- show example -->
 
       </div><!-- /.row -->
