@@ -79,13 +79,41 @@
                 </div>
 
                 <h4>Complexity</h4>
-                <input id="slide_complexity" name="complexity" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <div class="slider_set">
+                <input id="slide_complexity" name="complexity" type="text" 
+                  value="" 
+                  data-provide="slider"
+                  data-slider-ticks="[-1, 0, 1]"
+                  data-slider-ticks-labels='["Simple", "", "Complex"]'
+                  data-slider-min="-1"
+                  data-slider-max="1"
+                  data-slider-step="1"
+                  data-slider-value="0"
+                  data-slider-tooltip="hide" /></div>
 
                 <h4>Tone</h4>
-                <input id="slide_tone" name="tone" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <div class="slider_set">
+                <input id="slide_tone" name="tone" type="text" value="" 
+                  data-provide="slider"
+                  data-slider-ticks="[-1, 0, 1]"
+                  data-slider-ticks-labels='["Negative", "", "Positive"]'
+                  data-slider-min="-1"
+                  data-slider-max="1"
+                  data-slider-step="1"
+                  data-slider-value="0"
+                  data-slider-tooltip="hide" /></div>
 
                 <h4>Objectivity</h4>
-                <input id="slide_objectivity" name="objectivity" type="text" value="" data-slider-min="-1" data-slider-max="1" data-slider-step="1" data-slider-value="0" data-slider-selection="after">
+                <div class="slider_set">
+                <input id="slide_objectivity" name="objectivity" type="text" value="" 
+                  data-provide="slider"
+                  data-slider-ticks="[-1, 0, 1]"
+                  data-slider-ticks-labels='["Ornate", "", "Dry"]'
+                  data-slider-min="-1"
+                  data-slider-max="1"
+                  data-slider-step="1"
+                  data-slider-value="0"
+                  data-slider-tooltip="hide" /></div>
               </div><!-- sidebar-module-inset-->
             </div><!-- /.blog-sidebar -->        
         </form>

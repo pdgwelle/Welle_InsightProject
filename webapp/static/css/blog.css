@@ -194,9 +194,14 @@ label{
 }
 
 .negative_margin{
-  margin-top: -240px;
+  margin-top: -370px;
   margin-bottom: 40px;
   min-height: 600px;
 }
 
 strong{color: red;}
+
+.slider_set{
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
