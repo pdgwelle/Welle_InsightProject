@@ -65,21 +65,85 @@
                 
                 <h4>Source</h4>
                 <div class="radio">
-                    <input type="radio" id="contactChoice1"
-                     name="source" value="fiction" checked="checked">
-                    <label for="contactChoice1">Fiction</label><br>
 
-                    <input type="radio" id="contactChoice2"
-                     name="source" value="news">
-                    <label for="news">News</label><br>
+                    {% if (source=='fiction') or (source is not defined) or (source == 'error') %}
+                      <input type="radio" id="contactChoice1"
+                       name="source" value="fiction" checked="checked">
+                      <label for="contactChoice1">Fiction</label><br>
 
-                    <input type="radio" id="contactChoice3"
-                     name="source" value="twitter">
-                    <label for="twitter">Twitter</label><br>
+                      <input type="radio" id="contactChoice2"
+                       name="source" value="news">
+                      <label for="news">News</label><br>
+
+                      <input type="radio" id="contactChoice3"
+                       name="source" value="twitter">
+                      <label for="twitter">Twitter</label><br>
+                    {% elif source == 'news' %}
+                      <input type="radio" id="contactChoice1"
+                       name="source" value="fiction">
+                      <label for="contactChoice1">Fiction</label><br>
+
+                      <input type="radio" id="contactChoice2"
+                       name="source" value="news", checked="checked">
+                      <label for="news">News</label><br>
+
+                      <input type="radio" id="contactChoice3"
+                       name="source" value="twitter">
+                      <label for="twitter">Twitter</label><br>
+                    {% elif source == 'twitter' %}
+                      <input type="radio" id="contactChoice1"
+                       name="source" value="fiction">
+                      <label for="contactChoice1">Fiction</label><br>
+
+                      <input type="radio" id="contactChoice2"
+                       name="source" value="news">
+                      <label for="news">News</label><br>
+
+                      <input type="radio" id="contactChoice3"
+                       name="source" value="twitter" checked="checked">
+                      <label for="twitter">Twitter</label><br>
+                    {% endif %}
                 </div>
 
                 <h4>Complexity</h4>
                 <div class="slider_set">
+                {% if ranks %}
+                <input id="slide_complexity" name="complexity" type="text" 
+                  value="" 
+                  data-provide="slider"
+                  data-slider-ticks="[-1, 0, 1]"
+                  data-slider-ticks-labels='["Simple", "", "Complex"]'
+                  data-slider-min="-1"
+                  data-slider-max="1"
+                  data-slider-step="1"
+                  data-slider-value="{{ranks[1]}}"
+                  data-slider-tooltip="hide" /></div>
+
+                <h4>Tone</h4>
+                <div class="slider_set">
+                <input id="slide_tone" name="tone" type="text" value="" 
+                  data-provide="slider"
+                  data-slider-ticks="[-1, 0, 1]"
+                  data-slider-ticks-labels='["Negative", "", "Positive"]'
+                  data-slider-min="-1"
+                  data-slider-max="1"
+                  data-slider-step="1"
+                  data-slider-value="{{ranks[0]}}"
+                  data-slider-tooltip="hide" /></div>
+
+                <h4>Objectivity</h4>
+                <div class="slider_set">
+                <input id="slide_objectivity" name="objectivity" type="text" value="" 
+                  data-provide="slider"
+                  data-slider-ticks="[-1, 0, 1]"
+                  data-slider-ticks-labels='["Ornate", "", "Dry"]'
+                  data-slider-min="-1"
+                  data-slider-max="1"
+                  data-slider-step="1"
+                  data-slider-value="{{ranks[2]}}"
+                  data-slider-tooltip="hide" /></div>
+
+                {% else %}
                 <input id="slide_complexity" name="complexity" type="text" 
                   value="" 
                   data-provide="slider"
@@ -114,6 +178,8 @@
                   data-slider-step="1"
                   data-slider-value="0"
                   data-slider-tooltip="hide" /></div>
+
+              {% endif %}
               </div><!-- sidebar-module-inset-->
             </div><!-- /.blog-sidebar -->        
         </form>
