@@ -196,6 +196,7 @@
                       <input type="hidden" name="word" value="{{word}}">
                       <input type="hidden" name="source" value="{{source}}">
                       <input type="hidden" name="doc_id" value="{{passage[4]}}">
+                      <input type="hidden" name="ranks" value="{{ranks}}">
                       <input name="mode" type="hidden" value="get_similar">
                       <button class = "left_margin">Get Similar Example!</button>
                   </form>
@@ -215,6 +216,7 @@
                     <input type="hidden" name="word" value="{{word}}">
                     <input type="hidden" name="source" value="{{source}}">
                     <input type="hidden" name="doc_id" value="{{passage[4]}}">
+                    <input type="hidden" name="ranks" value="{{ranks}}">
                     <input name="mode" type="hidden" value="get_similar">
                     <button class = "left_margin">Get Similar Example!</button>
                   </div>
@@ -227,6 +229,7 @@
               {% if passage_list %}
                 {% for passage in passage_list %}
                   {{passage|safe}}
+                  <input type="hidden" name="ranks" value="{{ranks}}">
                 {% endfor %}
               {% endif %}
             {% endif %}

@@ -10,6 +10,8 @@ from sqlalchemy_utils import database_exists, create_database
 import database_scripts as db
 from webapp import app
 
+import ast
+
 @app.route('/')
 @app.route('/', methods=['POST'])
 def index():
@@ -33,6 +35,7 @@ def index():
               embedding = request.form['embedding']
               source = request.form['source']
               selected_passage = request.form['doc_id']
+              ranks = ast.literal_eval(request.form['ranks']) 
               passage_list = db.get_similar_passages(word, embedding, source, selected_passage)
               return render_template("index.html", passage_list=passage_list, word=word, source=source, ranks=ranks)        
         except:
