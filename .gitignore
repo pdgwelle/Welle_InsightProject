@@ -106,3 +106,4 @@ _old/*
 
 
 database_scripts/secrets.py
+mockup/*
