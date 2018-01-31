@@ -3,7 +3,7 @@ import numpy as np
 import tweepy
 
 import textblob
-import textacy
+from textstat.textstat import textstat
 import HTMLParser
 
 import secrets
@@ -151,9 +151,7 @@ def get_html_list(url_list):
     return html_list
 
 def get_passage_scores(passage):
-    doc = textacy.Doc(passage, lang=u"en_core_web_sm")
-    textstats = textacy.TextStats(doc)
-    readability = textstats.flesch_readability_ease
+    readability = textstat.flesch_reading_ease(passage)
     polarity, subjectivity = textblob.TextBlob(passage).sentiment
     return polarity, subjectivity, readability
 
