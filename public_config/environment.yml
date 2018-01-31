@@ -1,18 +1,14 @@
-name: FTM27
+name: FTM_Server
 channels:
   - defaults
 dependencies:
   - ca-certificates=2017.08.26=h1d4fec5_0
   - certifi=2018.1.18=py27_0
-  - intel-openmp=2018.0.0=hc7b2577_8
   - libedit=3.1=heed3624_0
   - libffi=3.2.1=hd88cf55_4
   - libgcc-ng=7.2.0=h7cc24e2_2
-  - libgfortran-ng=7.2.0=h9f7466a_2
   - libstdcxx-ng=7.2.0=h7a57d05_2
-  - mkl=2018.0.1=h19d6760_4
   - ncurses=6.0=h9df7e31_2
-  - numpy=1.14.0=py27h3dfced4_1
   - openssl=1.0.2n=hb7f436b_0
   - pip=9.0.1=py27ha730c48_4
   - python=2.7.14=h1571d57_29
@@ -24,58 +20,28 @@ dependencies:
   - zlib=1.2.11=ha838bed_2
   - pip:
     - ast==0.0.2
-    - backports.csv==1.0.5
-    - cachetools==2.0.1
     - chardet==3.0.4
     - click==6.7
-    - cymem==1.31.2
-    - cytoolz==0.8.2
-    - decorator==4.2.1
-    - dill==0.2.7.1
-    - en-core-web-sm==2.0.0
     - flask==0.12.2
-    - ftfy==4.4.3
-    - html5lib==1.0.1
     - htmlparser==0.0.2
     - idna==2.6
-    - ijson==2.3
     - itsdangerous==0.24
     - jinja2==2.10
     - markupsafe==1.0
     - mongoengine==0.15.0
-    - msgpack-numpy==0.4.1
-    - msgpack-python==0.5.1
-    - murmurhash==0.28.0
-    - networkx==2.1
     - nltk==3.2.5
+    - numpy==1.14.0
     - oauthlib==2.0.6
-    - pathlib==1.0.1
-    - plac==0.9.6
-    - preshed==1.0.0
-    - pyemd==0.5.1
     - pymongo==3.6.0
     - pyphen==0.9.4
-    - python-levenshtein==0.12.0
-    - regex==2017.4.5
+    - repoze.lru==0.7
     - requests==2.18.4
     - requests-oauthlib==0.8.0
-    - scikit-learn==0.19.1
-    - scipy==1.0.0
     - six==1.11.0
-    - spacy==2.0.5
-    - termcolor==1.1.0
-    - textacy==0.5.0
     - textblob==0.15.1
-    - thinc==6.10.2
-    - toolz==0.9.0
-    - tqdm==4.19.5
+    - textstat==0.4.1
     - tweepy==3.5.0
-    - ujson==1.35
-    - unidecode==1.0.22
     - urllib3==1.22
-    - wcwidth==0.1.7
-    - webencodings==0.5.1
     - werkzeug==0.14.1
-    - wrapt==1.10.11
-prefix: /home/pdgwelle/Software/anaconda2/envs/FTM27
+prefix: /home/pdgwelle/Software/anaconda2/envs/FTM_Server
 
