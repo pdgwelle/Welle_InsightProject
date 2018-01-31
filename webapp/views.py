@@ -1,11 +1,5 @@
-import pandas as pd
-import psycopg2
-
 from flask import request
 from flask import render_template
-
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
 
 import database_scripts as db
 from webapp import app
@@ -19,7 +13,7 @@ def index():
         return render_template("index.html")
     
     else:
-        try:
+        #try:
           if request.form['mode'] == 'first_query':
               query = request.form['query'].lower()
               tone = request.form['tone']
@@ -38,5 +32,5 @@ def index():
               ranks = ast.literal_eval(request.form['ranks']) 
               passage_list = db.get_similar_passages(word, embedding, source, selected_passage)
               return render_template("index.html", passage_list=passage_list, word=word, source=source, ranks=ranks)        
-        except:
-          return render_template("index.html", source="error")
+        # except:
+        #   return render_template("index.html", source="error")

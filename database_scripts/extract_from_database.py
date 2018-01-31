@@ -6,14 +6,6 @@ import random
 
 import numpy as np
 
-import readability
-
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-sns.set_style('white')
-sns.set_context('talk')
-
 import tweepy
 import HTMLParser
 from textblob import TextBlob
